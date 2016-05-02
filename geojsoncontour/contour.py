@@ -72,6 +72,6 @@ def contour_to_geojson(contour, filename, contour_labels, min_angle=2, ndigits=5
         print('no points found')
 
     feature_collection = FeatureCollection(line_features)
-    dump = geojson.dumps(feature_collection)
-    with open(filename + '.geojson', 'w') as fileout:
+    dump = geojson.dumps(feature_collection, sort_keys=True)
+    with open(filename, 'w') as fileout:
         fileout.write(dump)
