@@ -3,6 +3,8 @@ import unittest
 import filecmp
 
 import numpy
+import matplotlib as mpl
+mpl.use('Agg')  # create plots without running X-server
 import matplotlib.pyplot as plt
 
 import geojsoncontour
