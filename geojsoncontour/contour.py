@@ -23,12 +23,13 @@ def angle(v1, v2):
     return math.acos(cos_angle)
 
 
-def contour_to_geojson(contour, geojson_filepath, contour_labels, min_angle_deg=2, ndigits=5, unit=''):
+def contour_to_geojson(contour, geojson_filepath, contour_levels, min_angle_deg=2,
+                       ndigits=5, unit='', stroke_width=5):
     collections = contour.collections
     total_points = 0
     total_points_original = 0
     contour_index = 0
-    assert len(contour_labels) == len(collections)
+    assert len(contour_levels) == len(collections)
     line_features = []
     for collection in collections:
         paths = collection.get_paths()
@@ -57,10 +58,9 @@ def contour_to_geojson(contour, geojson_filepath, contour_labels, min_angle_deg=
             total_points_original += len(v)
             line = LineString(coordinates)
             properties = {
-                "stroke-width": 10,
+                "stroke-width": stroke_width,
                 "stroke": rgb2hex(color[0]),
-                "label": contour_labels[contour_index],
-                "unit": unit
+                "title": "%.2f" % contour_levels[contour_index] + ' ' + unit,
             }
             line_features.append(Feature(geometry=line, properties=properties))
         contour_index += 1

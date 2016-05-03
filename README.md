@@ -30,7 +30,7 @@ contour = ax.contour(lon_range, lat_range, Z, levels=levels, cmap=plt.cm.jet)
 geojsoncontour.contour_to_geojson(
     contour=contour,
     geojson_filepath='out.geojson',
-    contour_labels=levels,
+    contour_levels=levels,
     ndigits=3,
     unit='m'
 )

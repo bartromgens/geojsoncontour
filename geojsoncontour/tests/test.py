@@ -21,7 +21,7 @@ class TestContourToGeoJson(unittest.TestCase):
 
     def test_matplotlib_contour_to_geojson(self):
         latrange, lonrange, Z = self.create_grid_data()
-        config = ContourPlotConfig(level_lower=0, level_upper=202)
+        config = ContourPlotConfig(level_lower=0, level_upper=202, unit='[unit]')
 
         figure = plt.figure()
         ax = figure.add_subplot(111)
@@ -35,7 +35,7 @@ class TestContourToGeoJson(unittest.TestCase):
         geojsoncontour.contour_to_geojson(
             contour=contours,
             geojson_filepath=self.geojson_file,
-            contour_labels=config.levels,
+            contour_levels=config.levels,
             min_angle_deg=config.min_angle_between_segments,
             ndigits=ndigits,
             unit=config.unit
