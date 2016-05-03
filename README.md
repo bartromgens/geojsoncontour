@@ -1,4 +1,5 @@
 # geojsoncontour
+[![PyPI version](https://badge.fury.io/py/geojsoncontour.svg)](https://badge.fury.io/py/geojsoncontour)  
 A Python 3 module to convert matplotlib contour plots to geojson.
 
 Designed to show geographical [contour plots](http://matplotlib.org/examples/pylab_examples/contour_demo.html), 
