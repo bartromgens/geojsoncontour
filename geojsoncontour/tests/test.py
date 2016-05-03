@@ -68,3 +68,6 @@ class ContourPlotConfig(object):
             stop=self.level_upper,
             num=self.n_contours
         )
+
+if __name__ == '__main__':
+    unittest.main()
