@@ -21,7 +21,7 @@ install:
 - pip install -r requirements_travis.txt
 - pip install coveralls
 script:
-- coverage run geojsoncontour/tests/test.py
+- python setup.py nosetests
 notifications:
   email: false
 after_success:
