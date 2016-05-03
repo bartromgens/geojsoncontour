@@ -3,6 +3,8 @@ import unittest
 import filecmp
 
 import numpy
+import matplotlib as mpl
+mpl.use('Agg')  # create plots without running X-server
 import matplotlib.pyplot as plt
 
 import geojsoncontour
@@ -68,3 +70,6 @@ class ContourPlotConfig(object):
             stop=self.level_upper,
             num=self.n_contours
         )
+
+if __name__ == '__main__':
+    unittest.main()
