@@ -1,9 +1,18 @@
 from setuptools import setup
 
+try:
+    import pypandoc
+    long_description = pypandoc.convert('README.md', 'rst')
+except(IOError, ImportError):
+    long_description = open('README.md').read()
+
+
 setup(
     name='geojsoncontour',
-    version='0.1dev',
+    version='0.1.0',
     description='Convert matplotlib contour plots to geojson',
+    long_description=long_description,
+    keywords='contour plot geojson pyplot matplotlib gis map',
     url='http://github.com/bartromgens/geojsoncontour',
     author='Bart Römgens',
     author_email='bart.romgens@gmail.com',
