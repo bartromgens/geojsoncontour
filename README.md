@@ -41,3 +41,5 @@ See [example1.py](geojsoncontour/examples/example1.py) for a basic but complete 
 ### Show the geojson on a map
 An easy way to show the generated geojson on a map is the online geojson renderer [geojson.io](http://geojson.io).
 
+### Style properties
+Stroke color and width are set as geojson properties following https://github.com/mapbox/simplestyle-spec.
