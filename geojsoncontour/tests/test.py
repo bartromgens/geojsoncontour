@@ -26,18 +26,17 @@ class TestContourToGeoJson(unittest.TestCase):
         contours = ax.contour(
             lonrange, latrange, Z,
             levels=config.levels,
-            cmap=config.colormap,
-            norm=config.norm
+            cmap=config.colormap
         )
 
         ndigits = 3
         geojsoncontour.contour_to_geojson(
-            contours,
-            self.geojson_file,
-            config.levels,
-            config.min_angle_between_segments,
-            ndigits,
-            config.unit
+            contour=contours,
+            geojson_filepath=self.geojson_file,
+            contour_labels=config.levels,
+            min_angle_deg=config.min_angle_between_segments,
+            ndigits=ndigits,
+            unit=config.unit
         )
         self.assertTrue(os.path.exists(self.geojson_file))
         self.assertTrue(filecmp.cmp(self.benchmark_geojson_file, self.geojson_file))
@@ -64,7 +63,6 @@ class ContourPlotConfig(object):
         self.level_upper = level_upper
         self.colormap = colormap
         self.unit = unit
-        self.norm = None
         self.levels = numpy.linspace(
             start=self.level_lower,
             stop=self.level_upper,

@@ -23,7 +23,7 @@ def angle(v1, v2):
     return math.acos(cos_angle)
 
 
-def contour_to_geojson(contour, filename, contour_labels, min_angle=2, ndigits=5, unit=''):
+def contour_to_geojson(contour, geojson_filepath, contour_labels, min_angle_deg=2, ndigits=5, unit=''):
     collections = contour.collections
     total_points = 0
     total_points_original = 0
@@ -45,7 +45,7 @@ def contour_to_geojson(contour, filename, contour_labels, min_angle=2, ndigits=5
             for i in range(1, len(v) - 2):
                 v2 = v[i + 1] - v[i - 1]
                 diff_angle = math.fabs(angle(v1, v2) * 180.0 / math.pi)
-                if diff_angle > min_angle:
+                if diff_angle > min_angle_deg:
                     lat = round(v[i][0], ndigits)
                     long = round(v[i][1], ndigits)
                     coordinates.append((lat, long))
@@ -73,5 +73,5 @@ def contour_to_geojson(contour, filename, contour_labels, min_angle=2, ndigits=5
 
     feature_collection = FeatureCollection(line_features)
     dump = geojson.dumps(feature_collection, sort_keys=True)
-    with open(filename, 'w') as fileout:
+    with open(geojson_filepath, 'w') as fileout:
         fileout.write(dump)
