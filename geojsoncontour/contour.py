@@ -30,7 +30,7 @@ def angle(v1, v2):
 
 def contour_to_geojson(contour, geojson_filepath, contour_levels,
                        min_angle_deg=2,
-                       ndigits=5, unit='', stroke_width=3):
+                       ndigits=3, unit='', stroke_width=3):
     """Transform matplotlib.contour to geojson."""
     collections = contour.collections
     total_points = 0
@@ -84,8 +84,9 @@ def contour_to_geojson(contour, geojson_filepath, contour_levels,
         fileout.write(dump)
 
 
-def contourf_to_geojson(contourf, geojson_filepath, cf_levels, unit='',
-                        fill_opacity=.9, ndigits=3, min_angle_deg=None):
+def contourf_to_geojson(contourf, geojson_filepath, contour_levels,
+                        min_angle_deg=None,
+                        ndigits=3, unit='', fill_opacity=.9, stroke_width=1):
     """Transform matplotlib.contourf to geojson."""
     polygon_features = []
     contourf_index = 0
@@ -98,11 +99,11 @@ def contourf_to_geojson(contourf, geojson_filepath, cf_levels, unit='',
                 fcolor = rgb2hex(color[0])
                 properties = {
                     "stroke": fcolor,
-                    "stroke-width": 1,
+                    "stroke-width": stroke_width,
                     "stroke-opacity": 1,
                     "fill": fcolor,
                     "fill-opacity": fill_opacity,
-                    "title": "%.2f" % cf_levels[contourf_index] + ' ' + unit
+                    "title": "%.2f" % contour_levels[contourf_index] + ' ' + unit
                 }
                 feature = Feature(geometry=polygon, properties=properties)
                 polygon_features.append(feature)
