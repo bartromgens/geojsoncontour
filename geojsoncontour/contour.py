@@ -1,29 +1,32 @@
-import math
-
-
 from matplotlib.colors import rgb2hex
-
 from geojson import Feature, LineString, FeatureCollection
 import geojson
 
-
-def dotproduct(v1, v2):
-    return sum((a * b) for a, b in zip(v1, v2))
+import numpy as np
 
 
-def length(v):
-    return math.sqrt(dotproduct(v, v))
+def unit_vector(vector):
+    """Return the unit vector of the vector."""
+    return vector / np.linalg.norm(vector)
 
 
 def angle(v1, v2):
-    cos_angle = dotproduct(v1, v2) / (length(v1) * length(v2))
-    cos_angle = min(1.0, max(cos_angle, -1.0))
-    assert cos_angle <= 1.0
-    assert cos_angle >= -1.0
-    return math.acos(cos_angle)
+    """Return the angle in radians between vectors 'v1' and 'v2'.
+
+    >>> angle_between((1, 0, 0), (0, 1, 0))
+    1.5707963267948966
+    >>> angle_between((1, 0, 0), (1, 0, 0))
+    0.0
+    >>> angle_between((1, 0, 0), (-1, 0, 0))
+    3.141592653589793
+    """
+    v1_u = unit_vector(v1)
+    v2_u = unit_vector(v2)
+    return np.arccos(np.clip(np.dot(v1_u, v2_u), -1.0, 1.0))
 
 
-def contour_to_geojson(contour, geojson_filepath, contour_levels, min_angle_deg=2,
+def contour_to_geojson(contour, geojson_filepath, contour_levels,
+                       min_angle_deg=2,
                        ndigits=5, unit='', stroke_width=5):
     collections = contour.collections
     total_points = 0
@@ -41,19 +44,19 @@ def contour_to_geojson(contour, geojson_filepath, contour_levels, min_angle_deg=
             coordinates = []
             v1 = v[1] - v[0]
             lat = round(v[0][0], ndigits)
-            long = round(v[0][1], ndigits)
-            coordinates.append((lat, long))
+            lon = round(v[0][1], ndigits)
+            coordinates.append((lat, lon))
             for i in range(1, len(v) - 2):
                 v2 = v[i + 1] - v[i - 1]
-                diff_angle = math.fabs(angle(v1, v2) * 180.0 / math.pi)
+                diff_angle = np.fabs(angle(v1, v2) * 180.0 / np.pi)
                 if diff_angle > min_angle_deg:
                     lat = round(v[i][0], ndigits)
-                    long = round(v[i][1], ndigits)
-                    coordinates.append((lat, long))
+                    lon = round(v[i][1], ndigits)
+                    coordinates.append((lat, lon))
                     v1 = v[i] - v[i - 1]
             lat = round(v[-1][0], ndigits)
-            long = round(v[-1][1], ndigits)
-            coordinates.append((lat, long))
+            lon = round(v[-1][1], ndigits)
+            coordinates.append((lat, lon))
             total_points += len(coordinates)
             total_points_original += len(v)
             line = LineString(coordinates)
