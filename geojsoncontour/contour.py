@@ -89,11 +89,13 @@ def contourf_to_geojson(contourf, geojson_filepath, contour_levels,
                         ndigits=3, unit='', fill_opacity=.9, stroke_width=1):
     """Transform matplotlib.contourf to geojson."""
     polygon_features = []
-    contourf_index = 0
+    contourf_idx = 0
     for coll in contourf.collections:
         color = coll.get_facecolor()
         for path in coll.get_paths():
             for coord in path.to_polygons():
+                if min_angle_deg:
+                    coord = keep_high_angle(coord, min_angle_deg)
                 coord = np.around(coord, ndigits) if ndigits else coord
                 polygon = Polygon(coordinates=[coord.tolist()])
                 fcolor = rgb2hex(color[0])
@@ -103,11 +105,28 @@ def contourf_to_geojson(contourf, geojson_filepath, contour_levels,
                     "stroke-opacity": 1,
                     "fill": fcolor,
                     "fill-opacity": fill_opacity,
-                    "title": "%.2f" % contour_levels[contourf_index] + ' ' + unit
+                    "title": "%.2f" % contour_levels[contourf_idx] + ' ' + unit
                 }
                 feature = Feature(geometry=polygon, properties=properties)
                 polygon_features.append(feature)
-        contourf_index += 1
+        contourf_idx += 1
     collection = FeatureCollection(polygon_features)
     with open(geojson_filepath, 'w') as fileout:
         geojson.dump(collection, fileout)
+
+
+def keep_high_angle(coords, min_angle_deg):
+    """Keep vertices with angles higher then given minimum."""
+    accepted = []
+    v = coords
+    v1 = v[1] - v[0]
+    accepted.append((v[0][0], v[0][1]))
+    # length = int(v.size/2)
+    for i in range(1, len(v) - 2):
+        v2 = v[i + 1] - v[i - 1]
+        diff_angle = np.fabs(angle(v1, v2) * 180.0 / np.pi)
+        if diff_angle > min_angle_deg:
+            accepted.append((v[i][0], v[i][1]))
+            v1 = v[i] - v[i - 1]
+    accepted.append((v[-1][0], v[-1][1]))
+    return np.array(accepted, dtype=coords.dtype)
