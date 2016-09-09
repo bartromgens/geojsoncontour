@@ -5,7 +5,8 @@
 import geojson
 import numpy as np
 from matplotlib.colors import rgb2hex
-from geojson import Feature, LineString, Polygon, FeatureCollection
+from geojson import Feature, LineString
+from geojson import Polygon, FeatureCollection, MultiPolygon
 
 
 def unit_vector(vector):
@@ -79,7 +80,8 @@ def contour_to_geojson(contour, geojson_filepath, contour_levels,
         print('no points found')
 
     feature_collection = FeatureCollection(line_features)
-    dump = geojson.dumps(feature_collection, sort_keys=True)
+    dump = geojson.dumps(feature_collection, sort_keys=True,
+                         separators=(',', ':'))
     with open(geojson_filepath, 'w') as fileout:
         fileout.write(dump)
 
@@ -112,7 +114,7 @@ def contourf_to_geojson(contourf, geojson_filepath, contour_levels,
         contourf_idx += 1
     collection = FeatureCollection(polygon_features)
     with open(geojson_filepath, 'w') as fileout:
-        geojson.dump(collection, fileout)
+        geojson.dump(collection, fileout, separators=(',', ':'))
 
 
 def keep_high_angle(coords, min_angle_deg):
@@ -130,3 +132,72 @@ def keep_high_angle(coords, min_angle_deg):
             v1 = v[i] - v[i - 1]
     accepted.append((v[-1][0], v[-1][1]))
     return np.array(accepted, dtype=coords.dtype)
+
+
+class MP(object):
+    """Class for easy MultiPolygon generation.
+
+    Just a helper class for easy identification of
+    similar matplotlib.collections.
+    """
+
+    def __init__(self, title, color):
+        """Destinction based on title and color."""
+        self.title = title
+        self.color = color
+        self.coords = []
+
+    def add_coords(self, coords):
+        """Add new coordinate set for MultiPolygon."""
+        self.coords.append(coords)
+
+    def __eq__(self, other):
+        """Comparison of two MP instances."""
+        return (self.title == getattr(other, 'title', False) and
+                self.color == getattr(other, 'color', False))
+
+    def mpoly(self):
+        """Output of GeoJSON MultiPolygon object."""
+        return MultiPolygon(coordinates=[self.coords])
+
+
+def contourf_to_multipolygeojson(contourf, geojson_filepath, contourf_levels,
+                                 unit='', fill_opacity=.9,
+                                 ndigits=3, min_angle_deg=5):
+    """Transform matplotlib.contourf to geojson with MultiPolygons."""
+    polygon_features = []
+    mps = []
+    contourf_index = 0
+    for coll in contourf.collections:
+        color = coll.get_facecolor()
+        for path in coll.get_paths():
+            for coord in path.to_polygons():
+                if min_angle_deg:
+                    coord = keep_high_angle(coord, min_angle_deg)
+                coord = np.around(coord, ndigits) if ndigits else coord
+                op = MP(contourf_levels[contourf_index], rgb2hex(color[0]))
+                if op in mps:
+                    for i, k in enumerate(mps):
+                        if k == op:
+                            mps[i].add_coords(coord.tolist())
+                else:
+                    op.add_coords(coord.tolist())
+                    mps.append(op)
+        contourf_index += 1
+    # starting here the multipolys will be extracted
+    for muli in mps:
+        polygon = muli.mpoly()
+        fcolor = muli.color
+        properties = {
+            "stroke": fcolor,
+            "stroke-width": 1,
+            "stroke-opacity": 1,
+            "fill": fcolor,
+            "fill-opacity": fill_opacity,
+            "title": "%.2f" % contourf_levels[contourf_index] + ' ' + unit
+        }
+        feature = Feature(geometry=polygon, properties=properties)
+        polygon_features.append(feature)
+    collection = FeatureCollection(polygon_features)
+    with open(geojson_filepath, 'w') as fileout:
+        geojson.dump(collection, fileout, separators=(',', ':'))
