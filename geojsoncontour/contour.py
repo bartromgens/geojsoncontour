@@ -125,6 +125,7 @@ def contourf_to_geojson(contourf, geojson_filepath, contour_levels,
 
 def set_properties(stroke_width, fcolor, fill_opacity, contour_levels,
                    contourf_idx, unit):
+    """Set property values for Polygon."""
     return {
         "stroke": fcolor,
         "stroke-width": stroke_width,
