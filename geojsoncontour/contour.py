@@ -7,7 +7,7 @@ import numpy as np
 from matplotlib.colors import rgb2hex
 from geojson import Feature, LineString
 from geojson import Polygon, FeatureCollection
-from .helper import MP, angle, keep_high_angle, set_properties
+from .helper import MP, keep_high_angle, set_properties
 
 
 def contour_to_geojson(contour, geojson_filepath, contour_levels,
@@ -15,8 +15,6 @@ def contour_to_geojson(contour, geojson_filepath, contour_levels,
                        ndigits=3, unit='', stroke_width=3):
     """Transform matplotlib.contour to geojson."""
     collections = contour.collections
-    total_points = 0
-    total_points_original = 0
     contour_index = 0
     assert len(contour_levels) == len(collections)
     line_features = []
@@ -27,25 +25,10 @@ def contour_to_geojson(contour, geojson_filepath, contour_levels,
             v = path.vertices
             if len(v) < 6:
                 continue
-            coordinates = []
-            v1 = v[1] - v[0]
-            lat = round(v[0][0], ndigits)
-            lon = round(v[0][1], ndigits)
-            coordinates.append((lat, lon))
-            for i in range(1, len(v) - 2):
-                v2 = v[i + 1] - v[i - 1]
-                diff_angle = np.fabs(angle(v1, v2) * 180.0 / np.pi)
-                if diff_angle > min_angle_deg:
-                    lat = round(v[i][0], ndigits)
-                    lon = round(v[i][1], ndigits)
-                    coordinates.append((lat, lon))
-                    v1 = v[i] - v[i - 1]
-            lat = round(v[-1][0], ndigits)
-            lon = round(v[-1][1], ndigits)
-            coordinates.append((lat, lon))
-            total_points += len(coordinates)
-            total_points_original += len(v)
-            line = LineString(coordinates)
+            coordinates = keep_high_angle(v, min_angle_deg)
+            if ndigits:
+                coordinates = np.around(coordinates, ndigits)
+            line = LineString(coordinates.tolist())
             properties = {
                 "stroke-width": stroke_width,
                 "stroke": rgb2hex(color[0]),
