@@ -3,7 +3,11 @@
 A Python 3 module to convert matplotlib contour plots to geojson.
 
 Designed to show geographical [contour plots](http://matplotlib.org/examples/pylab_examples/contour_demo.html), 
-created with [matplotlib/pyplot](https://github.com/matplotlib/matplotlib), as vector layer on interactive maps interactive slippy maps like [OpenLayers](https://github.com/openlayers/ol3) and [Leaflet](https://github.com/Leaflet/Leaflet).
+created with [matplotlib/pyplot](https://github.com/matplotlib/matplotlib), as vector layer on interactive slippy maps like [OpenLayers](https://github.com/openlayers/ol3) and [Leaflet](https://github.com/Leaflet/Leaflet).
+
+Demo project that uses geojsoncontour: [climatemaps.romgens.com](http://climatemaps.romgens.com)
+
+Currently only supports contour lines.
 
 ## Installation
 The recommended way to install is via pip,
@@ -12,7 +16,7 @@ $ pip install geojsoncontour
 ```
 
 ## Usage
-##### contour plot to geojson
+### Contour plot to geojson
 ```python
 import numpy
 import matplotlib.pyplot as plt
@@ -43,3 +47,6 @@ An easy way to show the generated geojson on a map is the online geojson rendere
 
 ### Style properties
 Stroke color and width are set as geojson properties following https://github.com/mapbox/simplestyle-spec.
+
+### Create geojson tiles
+Try [geojson-vt](https://github.com/mapbox/geojson-vt) or [tippecanoe](https://github.com/mapbox/tippecanoe) if performance is an issue and you need to tile your geojson contours.
