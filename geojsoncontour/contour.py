@@ -8,6 +8,7 @@ from matplotlib.colors import rgb2hex
 from geojson import Feature, LineString
 from geojson import Polygon, FeatureCollection
 from .helper import MP, keep_high_angle, set_properties
+import matplotlib
 
 
 def contour_to_geojson(contour, geojson_filepath, contour_levels,
@@ -106,3 +107,14 @@ def contourf_to_multipolygeojson(contourf, geojson_filepath, contour_levels,
     with open(geojson_filepath, 'w') as fileout:
         geojson.dump(collection, fileout,
                      sort_keys=True, separators=(',', ':'))
+
+
+def to_geojson(contour, multipolys=False, *args, **kwargs):
+    message = 'Expected QuadContourSet, got {}'.format(type(contour))
+    assert isinstance(contour, matplotlib.contour.QuadContourSet), message
+    if not contour.filled:
+        return contour_to_geojson(contour, *args, **kwargs)
+    elif multipolys:
+        return contourf_to_multipolygeojson(contour, *args, **kwargs)
+    else:
+        return contourf_to_geojson(contour, *args, **kwargs)

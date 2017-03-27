@@ -28,3 +28,4 @@ var/
 *.swp
 .ipynb_checkpoints/
 .cache/
+.geojson
