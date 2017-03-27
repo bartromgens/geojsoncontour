@@ -9,7 +9,7 @@ except(IOError, ImportError):
 
 setup(
     name='geojsoncontour',
-    version='0.2',
+    version='0.2.0',
     description='Convert matplotlib contour plots to geojson',
     long_description=long_description,
     keywords='contour plot geojson pyplot matplotlib gis map',
