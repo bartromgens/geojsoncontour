@@ -7,7 +7,7 @@ import numpy as np
 from matplotlib.colors import rgb2hex
 from geojson import Feature, LineString
 from geojson import Polygon, FeatureCollection
-from .helper import MP, keep_high_angle, set_properties
+from .utilities.multipoly import MP, keep_high_angle, set_properties
 import matplotlib
 
 
@@ -45,7 +45,7 @@ def contour_to_geojson(contour, geojson_filepath, contour_levels,
 
 
 def contourf_to_geojson(contourf, geojson_filepath, contour_levels,
-                        min_angle_deg=None,
+                        min_angle_deg=None, strdump=False,
                         ndigits=3, unit='', fill_opacity=.9, stroke_width=1):
     """Transform matplotlib.contourf to geojson."""
     polygon_features = []
@@ -66,13 +66,15 @@ def contourf_to_geojson(contourf, geojson_filepath, contour_levels,
                 polygon_features.append(feature)
         contourf_idx += 1
     collection = FeatureCollection(polygon_features)
+    if strdump:
+        return geojson.dumps(collection, sort_keys=True, separators=(',', ':'))
     with open(geojson_filepath, 'w') as fileout:
         geojson.dump(collection, fileout,
                      sort_keys=True, separators=(',', ':'))
 
 
 def contourf_to_multipolygeojson(contourf, geojson_filepath, contour_levels,
-                                 unit='', fill_opacity=.9,
+                                 unit='', fill_opacity=.9, strdump=False,
                                  ndigits=3, min_angle_deg=5, stroke_width=1):
     """Transform matplotlib.contourf to geojson with MultiPolygons."""
     polygon_features = []
@@ -104,17 +106,19 @@ def contourf_to_multipolygeojson(contourf, geojson_filepath, contour_levels,
         feature = Feature(geometry=polygon, properties=properties)
         polygon_features.append(feature)
     collection = FeatureCollection(polygon_features)
+    if strdump:
+        return geojson.dumps(collection, sort_keys=True, separators=(',', ':'))
     with open(geojson_filepath, 'w') as fileout:
         geojson.dump(collection, fileout,
                      sort_keys=True, separators=(',', ':'))
 
 
-def to_geojson(contour, multipolys=False, *args, **kwargs):
+def to_geojson(contour, multipolys=False, strdump=False, *args, **kwargs):
     message = 'Expected QuadContourSet, got {}'.format(type(contour))
     assert isinstance(contour, matplotlib.contour.QuadContourSet), message
     if not contour.filled:
-        return contour_to_geojson(contour, *args, **kwargs)
+        return contour_to_geojson(contour, strdump=strdump, *args, **kwargs)
     elif multipolys:
-        return contourf_to_multipolygeojson(contour, *args, **kwargs)
+        return contourf_to_multipolygeojson(contour, strdump=strdump, *args, **kwargs)
     else:
-        return contourf_to_geojson(contour, *args, **kwargs)
+        return contourf_to_geojson(contour, strdump=strdump, *args, **kwargs)
