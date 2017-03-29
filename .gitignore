@@ -90,3 +90,7 @@ ENV/
 
 # Macintosh
 .DS_Store
+
+
+# GeoJSON
+*.geojson
