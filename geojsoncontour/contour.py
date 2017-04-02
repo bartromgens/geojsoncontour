@@ -24,7 +24,7 @@ def angle(v1, v2):
 
 
 def contour_to_geojson(contour, geojson_filepath, contour_levels, min_angle_deg=2,
-                       ndigits=5, unit='', stroke_width=5):
+                       ndigits=5, unit='', stroke_width=5, geojson_properties=None):
     collections = contour.collections
     total_points = 0
     total_points_original = 0
@@ -61,7 +61,10 @@ def contour_to_geojson(contour, geojson_filepath, contour_levels, min_angle_deg=
                 "stroke-width": stroke_width,
                 "stroke": rgb2hex(color[0]),
                 "title": "%.2f" % contour_levels[contour_index] + ' ' + unit,
+                "level-value": float("%.6f" % contour_levels[contour_index])
             }
+            if geojson_properties:
+                properties = {**properties, **geojson_properties}
             line_features.append(Feature(geometry=line, properties=properties))
         contour_index += 1
 
