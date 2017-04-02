@@ -1,6 +1,5 @@
 import math
 
-
 from matplotlib.colors import rgb2hex
 
 from geojson import Feature, LineString, FeatureCollection
