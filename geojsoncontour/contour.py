@@ -35,7 +35,7 @@ def contour_to_geojson(contour, geojson_filepath, contour_levels, min_angle_deg=
         color = collection.get_edgecolor()
         for path in paths:
             v = path.vertices
-            if len(v) < 6:
+            if len(v) < 3:
                 continue
             coordinates = []
             v1 = v[1] - v[0]
@@ -64,15 +64,9 @@ def contour_to_geojson(contour, geojson_filepath, contour_levels, min_angle_deg=
                 "level-index": contour_index
             }
             if geojson_properties:
-                properties = {**properties, **geojson_properties}
+                properties.update(geojson_properties)
             line_features.append(Feature(geometry=line, properties=properties))
         contour_index += 1
-
-    if total_points_original > 0:
-        print('total points: ' + str(total_points) + ', compression: ' + str(
-            int((1.0 - total_points / total_points_original) * 100)) + '%')
-    else:
-        print('no points found')
 
     feature_collection = FeatureCollection(line_features)
     dump = geojson.dumps(feature_collection, sort_keys=True)
