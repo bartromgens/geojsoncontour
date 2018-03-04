@@ -6,7 +6,6 @@ import numpy
 import matplotlib as mpl
 mpl.use('Agg')  # create plots without running X-server
 import matplotlib.pyplot as plt
-
 import geojsoncontour
 
 
@@ -16,6 +15,11 @@ class TestContourToGeoJson(unittest.TestCase):
     geojson_properties_file = os.path.join(dirname, 'test_properties.geojson')
     benchmark_geojson_file = os.path.join(dirname, 'benchmark_test1.geojson')
     benchmark_geojson_properties_file = os.path.join(dirname, 'benchmark_test_properties.geojson')
+    geojson_file_contourf = os.path.join(dirname, 'contourf.geojson')
+    benchmark_geojson_file_contourf = os.path.join(dirname, 'benchmark_contourf.geojson')
+    geojson_file_multipoly = os.path.join(dirname, 'multipolycontourf.geojson')
+    benchmark_geojson_file_multipoly = os.path.join(dirname, 'benchmark_multipolycontourf.geojson')
+
 
     @classmethod
     def setUpClass(cls):
@@ -24,20 +28,33 @@ class TestContourToGeoJson(unittest.TestCase):
             os.remove(cls.geojson_file)
         if os.path.exists(cls.geojson_properties_file):
             os.remove(cls.geojson_properties_file)
+        if os.path.exists(cls.geojson_file_contourf):
+            os.remove(cls.geojson_file_contourf)
+        if os.path.exists(cls.geojson_file_multipoly):
+            os.remove(cls.geojson_file_multipoly)
 
-    def create_contours(self):
+    def create_contour(self):
         latrange, lonrange, Z = TestContourToGeoJson.create_grid_data()
         figure = plt.figure()
         ax = figure.add_subplot(111)
-        contours = ax.contour(
+        return ax.contour(
             lonrange, latrange, Z,
             levels=self.config.levels,
             cmap=self.config.colormap
         )
-        return contours
+
+    def create_contourf(self):
+        latrange, lonrange, Z = TestContourToGeoJson.create_grid_data()
+        figure = plt.figure()
+        ax = figure.add_subplot(111)
+        return ax.contourf(
+            lonrange, latrange, Z,
+            levels=self.config.levels,
+            cmap=self.config.colormap
+        )
 
     def test_matplotlib_contour_to_geojson(self):
-        contours = self.create_contours()
+        contours = self.create_contour()
         ndigits = 3
         geojsoncontour.contour_to_geojson(
             contour=contours,
@@ -45,32 +62,62 @@ class TestContourToGeoJson(unittest.TestCase):
             contour_levels=self.config.levels,
             min_angle_deg=self.config.min_angle_between_segments,
             ndigits=ndigits,
-            unit=self.config.unit
+            unit=self.config.unit,
+            stroke_width=5
         )
         self.assertTrue(os.path.exists(self.geojson_file))
         self.assertTrue(filecmp.cmp(self.benchmark_geojson_file, self.geojson_file))
         os.remove(self.geojson_file)
 
     def test_contour_to_geojson_extra_properties(self):
-        contours = self.create_contours()
+        contour = self.create_contour()
         ndigits = 3
         geojson_properties = {
             'description': 'A description',
             'stroke-opacity': 1.0
         }
         geojsoncontour.contour_to_geojson(
-            contour=contours,
+            contour=contour,
             geojson_filepath=self.geojson_properties_file,
             contour_levels=self.config.levels,
             min_angle_deg=self.config.min_angle_between_segments,
             ndigits=ndigits,
             unit=self.config.unit,
+            stroke_width=5,
             geojson_properties=geojson_properties
         )
         self.assertTrue(os.path.exists(self.geojson_properties_file))
         self.assertTrue(filecmp.cmp(self.benchmark_geojson_properties_file, self.geojson_properties_file))
         os.remove(self.geojson_properties_file)
 
+    def test_matplotlib_contourf_to_geojson(self):
+        contourf = self.create_contourf()
+        ndigits = 3
+        geojsoncontour.contourf_to_geojson(
+            contourf=contourf,
+            geojson_filepath=self.geojson_file_contourf,
+            min_angle_deg=self.config.min_angle_between_segments,
+            ndigits=ndigits,
+            unit=self.config.unit
+        )
+        self.assertTrue(os.path.exists(self.geojson_file_contourf))
+        self.assertTrue(filecmp.cmp(self.benchmark_geojson_file_contourf, self.geojson_file_contourf))
+        os.remove(self.geojson_file_contourf)
+
+    def test_matplotlib_contourf_to_multipolygeojson(self):
+        contourf = self.create_contourf()
+        ndigits = 3
+        geojsoncontour.contourf_to_multipolygeojson(
+            contourf=contourf,
+            geojson_filepath=self.geojson_file_multipoly,
+            contour_levels=self.config.levels,
+            min_angle_deg=self.config.min_angle_between_segments,
+            ndigits=ndigits,
+            unit=self.config.unit
+        )
+        self.assertTrue(os.path.exists(self.geojson_file_multipoly))
+        self.assertTrue(filecmp.cmp(self.benchmark_geojson_file_multipoly, self.geojson_file_multipoly))
+        os.remove(self.geojson_file_multipoly)
 
     @staticmethod
     def create_grid_data():
@@ -99,3 +146,7 @@ class ContourPlotConfig(object):
             stop=self.level_upper,
             num=self.n_contours
         )
+
+
+if __name__ == '__main__':
+    unittest.main()
