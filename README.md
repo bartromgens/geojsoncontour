@@ -15,7 +15,7 @@ $ pip install geojsoncontour
 
 ## Usage
 
-Use `contour_to_geojson` to create a geojson with contour lines from a `matplotlib.contour` plot (not filled).  
+Use `contour_to_geojson` to create a geojson with contour lines from a `matplotlib.contour` plot (not filled).
 Use `contourf_to_geojson` to create a geojson with filled contours from a `matplotlib.contourf` plot.
 
 ### Contour plot to geojson
