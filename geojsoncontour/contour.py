@@ -23,7 +23,7 @@ def contour_to_geojson(contour, geojson_filepath=None, contour_levels=None, min_
     for collection in collections:
         paths = collection.get_paths()
         color = collection.get_edgecolor()
-        for path in paths:
+        for path in collection.get_paths():
             v = path.vertices
             if len(v) < 3:
                 continue
@@ -56,9 +56,9 @@ def contourf_to_geojson(contourf, geojson_filepath=None, contour_levels=None, mi
         contour_levels = contourf.levels
     polygon_features = []
     contourf_idx = 0
-    for coll in contourf.collections:
-        color = coll.get_facecolor()
-        for path in coll.get_paths():
+    for collection in reversed(contourf.collections):
+        color = collection.get_facecolor()
+        for path in collection.get_paths():
             for coord in path.to_polygons():
                 if min_angle_deg:
                     coord = keep_high_angle(coord, min_angle_deg)
