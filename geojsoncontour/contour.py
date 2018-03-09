@@ -8,14 +8,11 @@ from geojson import Polygon, FeatureCollection
 from .utilities.multipoly import MP, keep_high_angle, set_contourf_properties
 
 
-def contour_to_geojson(contour, geojson_filepath=None, contour_levels=None, min_angle_deg=None,
+def contour_to_geojson(contour, geojson_filepath=None, min_angle_deg=None,
                        ndigits=5, unit='', stroke_width=1, geojson_properties=None, strdump=False):
     """Transform matplotlib.contour to geojson."""
-    if contour_levels is None:
-        contour_levels = contour.levels
     collections = contour.collections
     contour_index = 0
-    assert len(contour_levels) == len(collections)
     line_features = []
     for collection in collections:
         color = collection.get_edgecolor()
@@ -30,8 +27,8 @@ def contour_to_geojson(contour, geojson_filepath=None, contour_levels=None, min_
             properties = {
                 "stroke-width": stroke_width,
                 "stroke": rgb2hex(color[0]),
-                "title": "%.2f" % contour_levels[contour_index] + ' ' + unit,
-                "level-value": float("%.6f" % contour_levels[contour_index]),
+                "title": "%.2f" % contour.levels[contour_index] + ' ' + unit,
+                "level-value": float("%.6f" % contour.levels[contour_index]),
                 "level-index": contour_index
             }
             if geojson_properties:
@@ -45,11 +42,9 @@ def contour_to_geojson(contour, geojson_filepath=None, contour_levels=None, min_
         geojson.dump(feature_collection, fileout, sort_keys=True, separators=(',', ':'))
 
 
-def contourf_to_geojson_overlap(contourf, geojson_filepath=None, contour_levels=None, min_angle_deg=None,
+def contourf_to_geojson_overlap(contourf, geojson_filepath=None, min_angle_deg=None,
                                 ndigits=5, unit='', stroke_width=1, fill_opacity=.9, geojson_properties=None, strdump=False):
     """Transform matplotlib.contourf to geojson with overlapping filled contours."""
-    if contour_levels is None:
-        contour_levels = contourf.levels
     polygon_features = []
     contourf_idx = 0
     for collection in contourf.collections:
@@ -61,7 +56,7 @@ def contourf_to_geojson_overlap(contourf, geojson_filepath=None, contour_levels=
                 coord = np.around(coord, ndigits) if ndigits else coord
                 polygon = Polygon(coordinates=[coord.tolist()])
                 fcolor = rgb2hex(color[0])
-                properties = set_contourf_properties(stroke_width, fcolor, fill_opacity, contour_levels, contourf_idx, unit)
+                properties = set_contourf_properties(stroke_width, fcolor, fill_opacity, contourf.levels, contourf_idx, unit)
                 if geojson_properties:
                     properties.update(geojson_properties)
                 feature = Feature(geometry=polygon, properties=properties)
@@ -74,11 +69,9 @@ def contourf_to_geojson_overlap(contourf, geojson_filepath=None, contour_levels=
         geojson.dump(feature_collection, fileout, sort_keys=True, separators=(',', ':'))
 
 
-def contourf_to_geojson(contourf, geojson_filepath=None, contour_levels=None, min_angle_deg=None,
+def contourf_to_geojson(contourf, geojson_filepath=None, min_angle_deg=None,
                         ndigits=5, unit='', stroke_width=1, fill_opacity=.9, geojson_properties=None, strdump=False):
     """Transform matplotlib.contourf to geojson with MultiPolygons."""
-    if contour_levels is None:
-        contour_levels = contourf.levels
     polygon_features = []
     mps = []
     contourf_idx = 0
@@ -89,7 +82,7 @@ def contourf_to_geojson(contourf, geojson_filepath=None, contour_levels=None, mi
                 if min_angle_deg:
                     coord = keep_high_angle(coord, min_angle_deg)
                 coord = np.around(coord, ndigits) if ndigits else coord
-                op = MP(contour_levels[contourf_idx], rgb2hex(color[0]))
+                op = MP(contourf.levels[contourf_idx], rgb2hex(color[0]))
                 if op in mps:
                     for i, k in enumerate(mps):
                         if k == op:
@@ -103,7 +96,7 @@ def contourf_to_geojson(contourf, geojson_filepath=None, contour_levels=None, mi
     for muli in mps:
         polygon = muli.mpoly()
         fcolor = muli.color
-        properties = set_contourf_properties(stroke_width, fcolor, fill_opacity, contour_levels, contourf_idx, unit)
+        properties = set_contourf_properties(stroke_width, fcolor, fill_opacity, contourf.levels, contourf_idx, unit)
         if geojson_properties:
             properties.update(geojson_properties)
         feature = Feature(geometry=polygon, properties=properties)

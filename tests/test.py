@@ -23,7 +23,7 @@ class TestContourToGeoJson(unittest.TestCase):
 
     @classmethod
     def setUpClass(cls):
-        cls.config = ContourPlotConfig(level_lower=0, level_upper=202, unit='[unit]')
+        cls.config = ContourPlotConfig(level_lower=0.0, level_upper=202.0, unit='[unit]')
         if os.path.exists(cls.geojson_file):
             os.remove(cls.geojson_file)
         if os.path.exists(cls.geojson_properties_file):
@@ -59,7 +59,6 @@ class TestContourToGeoJson(unittest.TestCase):
         geojsoncontour.contour_to_geojson(
             contour=contours,
             geojson_filepath=self.geojson_file,
-            contour_levels=self.config.levels,
             min_angle_deg=self.config.min_angle_between_segments,
             ndigits=ndigits,
             unit=self.config.unit,
@@ -79,7 +78,6 @@ class TestContourToGeoJson(unittest.TestCase):
         geojsoncontour.contour_to_geojson(
             contour=contour,
             geojson_filepath=self.geojson_properties_file,
-            contour_levels=self.config.levels,
             min_angle_deg=self.config.min_angle_between_segments,
             ndigits=ndigits,
             unit=self.config.unit,
@@ -96,7 +94,6 @@ class TestContourToGeoJson(unittest.TestCase):
         geojsoncontour.contourf_to_geojson(
             contourf=contourf,
             geojson_filepath=self.geojson_file_multipoly,
-            contour_levels=self.config.levels,
             min_angle_deg=self.config.min_angle_between_segments,
             ndigits=ndigits,
             unit=self.config.unit
@@ -134,7 +131,7 @@ class TestContourToGeoJson(unittest.TestCase):
 
 
 class ContourPlotConfig(object):
-    def __init__(self, level_lower=0, level_upper=100, colormap=plt.cm.jet, unit=''):  # jet, jet_r, YlOrRd, gist_rainbow
+    def __init__(self, level_lower=0.0, level_upper=100.0, colormap=plt.cm.jet, unit=''):  # jet, jet_r, YlOrRd, gist_rainbow
         self.n_contours = 10
         self.min_angle_between_segments = 15
         self.level_lower = level_lower
