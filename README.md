@@ -7,6 +7,8 @@ created with [matplotlib/pyplot](https://github.com/matplotlib/matplotlib), as v
 
 Demo project that uses geojsoncontour: [climatemaps.romgens.com](http://climatemaps.romgens.com)
 
+![geojson contour demo usage](https://raw.githubusercontent.com/bartromgens/geojsoncontour/master/data/example_climatemaps.png)
+
 ## Installation
 Install with pip,
 ```
