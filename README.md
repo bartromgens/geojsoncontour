@@ -1,13 +1,11 @@
 # geojsoncontour
 [![Build Status](https://travis-ci.org/bartromgens/geojsoncontour.svg?branch=master)](https://travis-ci.org/bartromgens/geojsoncontour) [![PyPI version](https://badge.fury.io/py/geojsoncontour.svg)](https://badge.fury.io/py/geojsoncontour) [![Coverage Status](https://coveralls.io/repos/github/bartromgens/geojsoncontour/badge.svg?branch=master)](https://coveralls.io/github/bartromgens/geojsoncontour?branch=master)  
-A Python 3 module to convert matplotlib contour plots to geojson.
+A Python 3 module to convert matplotlib contour plots to geojson. Supports both contour and contourf plots.
 
 Designed to show geographical [contour plots](http://matplotlib.org/examples/pylab_examples/contour_demo.html), 
 created with [matplotlib/pyplot](https://github.com/matplotlib/matplotlib), as vector layer on interactive slippy maps like [OpenLayers](https://github.com/openlayers/ol3) and [Leaflet](https://github.com/Leaflet/Leaflet).
 
 Demo project that uses geojsoncontour: [climatemaps.romgens.com](http://climatemaps.romgens.com)
-
-Currently only supports contour lines.
 
 ## Installation
 The recommended way to install is via pip,
