@@ -114,15 +114,3 @@ def contourf_to_multipolygeojson(contourf, geojson_filepath=None, contour_levels
         return geojson.dumps(collection, sort_keys=True, separators=(',', ':'))
     with open(geojson_filepath, 'w') as fileout:
         geojson.dump(collection, fileout, sort_keys=True, separators=(',', ':'))
-
-
-def to_geojson(contour, multipolys=False, strdump=False, *args, **kwargs):
-    message = 'Expected QuadContourSet, got {}'.format(type(contour))
-    assert isinstance(contour, matplotlib.contour.QuadContourSet), message
-    unit = contour.da_unit
-    if not contour.filled:
-        return contour_to_geojson(contour, strdump=strdump, unit=unit, *args, **kwargs)
-    elif multipolys:
-        return contourf_to_multipolygeojson(contour, strdump=strdump, unit=unit, *args, **kwargs)
-    else:
-        return contourf_to_geojson(contour, unit=unit, strdump=strdump, *args, **kwargs)
