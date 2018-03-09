@@ -26,13 +26,11 @@ import geojsoncontour
 # Create a contour plot plot from grid (lat, lon) data
 figure = plt.figure()
 ax = figure.add_subplot(111)
-contour = ax.contour(lon_range, lat_range, Z, levels=levels, cmap=plt.cm.jet)
+contour = ax.contour(lon_range, lat_range, Z, cmap=plt.cm.jet)
 
 # Convert matplotlib contour to geojson
-geojsoncontour.contour_to_geojson(
+geojson = geojsoncontour.contour_to_geojson(
     contour=contour,
-    geojson_filepath='out.geojson',
-    contour_levels=levels,
     ndigits=3,
     unit='m'
 )
