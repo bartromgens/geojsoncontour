@@ -101,12 +101,14 @@ def contourf_to_multipolygeojson(contourf, geojson_filepath=None, contour_levels
                     mps.append(op)
         contourf_idx += 1
     # starting here the multipolys will be extracted
+    contourf_idx = 0
     for muli in mps:
         polygon = muli.mpoly()
         fcolor = muli.color
         properties = set_properties(stroke_width, fcolor, fill_opacity, contour_levels, contourf_idx, unit)
         feature = Feature(geometry=polygon, properties=properties)
         polygon_features.append(feature)
+        contourf_idx += 1
     collection = FeatureCollection(polygon_features)
     if strdump or not geojson_filepath:
         return geojson.dumps(collection, sort_keys=True, separators=(',', ':'))
