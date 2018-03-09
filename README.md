@@ -40,7 +40,7 @@ geojsoncontour.contour_to_geojson(
 )
 
 ```
-See [example1.py](geojsoncontour/examples/example1.py) for a basic but complete example.
+See [example_contour.py](geojsoncontour/examples/example1.py) for a simple example.
 
 ### Show the geojson on a map
 An easy way to show the generated geojson on a map is the online geojson renderer [geojson.io](http://geojson.io).
