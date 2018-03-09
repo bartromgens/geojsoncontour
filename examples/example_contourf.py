@@ -20,7 +20,6 @@ contourf = ax.contourf(lonrange, latrange, Z, levels=levels, cmap=plt.cm.jet)
 # Convert matplotlib contourf to geojson
 geojson = geojsoncontour.contourf_to_geojson(
     contourf=contourf,
-    contour_levels=levels,
     min_angle_deg=3.0,
     ndigits=3,
     stroke_width=2,

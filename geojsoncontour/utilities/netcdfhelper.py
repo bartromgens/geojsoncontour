@@ -60,7 +60,6 @@ def netcdf_to_geojson(ncfile, var, fourth_dim=None):
             contourf=contourf,
             geojson_filepath='{}_{}_t{}_{}.geojson'.format(name, var,
                                                            t, position),
-            contour_levels=levels,
             ndigits=3,
             min_angle_deg=None,
             unit=unit
