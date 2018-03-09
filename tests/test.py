@@ -95,20 +95,6 @@ class TestContourToGeoJson(unittest.TestCase):
         ndigits = 3
         geojsoncontour.contourf_to_geojson(
             contourf=contourf,
-            geojson_filepath=self.geojson_file_contourf,
-            min_angle_deg=self.config.min_angle_between_segments,
-            ndigits=ndigits,
-            unit=self.config.unit
-        )
-        self.assertTrue(os.path.exists(self.geojson_file_contourf))
-        self.assertTrue(filecmp.cmp(self.benchmark_geojson_file_contourf, self.geojson_file_contourf))
-        os.remove(self.geojson_file_contourf)
-
-    def test_matplotlib_contourf_to_multipolygeojson(self):
-        contourf = self.create_contourf()
-        ndigits = 3
-        geojsoncontour.contourf_to_multipolygeojson(
-            contourf=contourf,
             geojson_filepath=self.geojson_file_multipoly,
             contour_levels=self.config.levels,
             min_angle_deg=self.config.min_angle_between_segments,
@@ -118,6 +104,20 @@ class TestContourToGeoJson(unittest.TestCase):
         self.assertTrue(os.path.exists(self.geojson_file_multipoly))
         self.assertTrue(filecmp.cmp(self.benchmark_geojson_file_multipoly, self.geojson_file_multipoly))
         os.remove(self.geojson_file_multipoly)
+
+    def test_matplotlib_contourf_to_geojson_overlap(self):
+        contourf = self.create_contourf()
+        ndigits = 3
+        geojsoncontour.contourf_to_geojson_overlap(
+            contourf=contourf,
+            geojson_filepath=self.geojson_file_contourf,
+            min_angle_deg=self.config.min_angle_between_segments,
+            ndigits=ndigits,
+            unit=self.config.unit
+        )
+        self.assertTrue(os.path.exists(self.geojson_file_contourf))
+        self.assertTrue(filecmp.cmp(self.benchmark_geojson_file_contourf, self.geojson_file_contourf))
+        os.remove(self.geojson_file_contourf)
 
     @staticmethod
     def create_grid_data():

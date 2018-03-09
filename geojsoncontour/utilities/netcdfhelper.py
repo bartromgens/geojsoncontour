@@ -56,7 +56,7 @@ def netcdf_to_geojson(ncfile, var, fourth_dim=None):
         levels = np.linspace(start=np.nanmin(third),
                              stop=np.nanmax(third), num=20)
         contourf = ax.contourf(X, Y, third, levels=levels, cmap=plt.cm.viridis)
-        geojsoncontour.contourf_to_multipolygeojson(
+        geojsoncontour.contourf_to_geojson(
             contourf=contourf,
             geojson_filepath='{}_{}_t{}_{}.geojson'.format(name, var,
                                                            t, position),

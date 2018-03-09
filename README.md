@@ -8,7 +8,7 @@ created with [matplotlib/pyplot](https://github.com/matplotlib/matplotlib), as v
 Demo project that uses geojsoncontour: [climatemaps.romgens.com](http://climatemaps.romgens.com)
 
 ## Installation
-The recommended way to install is via pip,
+Install with pip,
 ```
 $ pip install geojsoncontour
 ```
@@ -36,8 +36,8 @@ geojsoncontour.contour_to_geojson(
     ndigits=3,
     unit='m'
 )
-
 ```
+For filled contour plots (`matplotlib.contourf`) use `contourf_to_geojson`.
 See [example_contour.py](geojsoncontour/examples/example_contour.py) and [example_contourf.py](geojsoncontour/examples/example_contourf.py) for simple but complete examples.
 
 ### Show the geojson on a map

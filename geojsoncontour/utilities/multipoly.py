@@ -59,7 +59,7 @@ def keep_high_angle(vertices, min_angle_deg):
     return np.array(accepted, dtype=vertices.dtype)
 
 
-def set_properties(stroke_width, fcolor, fill_opacity, contour_levels, contourf_idx, unit):
+def set_contourf_properties(stroke_width, fcolor, fill_opacity, contour_levels, contourf_idx, unit):
     """Set property values for Polygon."""
     return {
         "stroke": fcolor,
