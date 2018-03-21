@@ -17,7 +17,7 @@ setup(
     author='Bart Römgens',
     author_email='bart.romgens@gmail.com',
     license='MIT',
-    packages=['geojsoncontour'],
+    packages=['geojsoncontour', 'geojsoncontour.utilities'],
     install_requires=[
         'geojson',
         'numpy',
