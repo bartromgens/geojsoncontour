@@ -9,7 +9,8 @@ from .utilities.multipoly import MP, keep_high_angle, set_contourf_properties
 
 
 def contour_to_geojson(contour, geojson_filepath=None, min_angle_deg=None,
-                       ndigits=5, unit='', stroke_width=1, geojson_properties=None, strdump=False):
+                       ndigits=5, unit='', stroke_width=1, geojson_properties=None, strdump=False,
+                       serialize=True):
     """Transform matplotlib.contour to geojson."""
     collections = contour.collections
     contour_index = 0
@@ -36,14 +37,12 @@ def contour_to_geojson(contour, geojson_filepath=None, min_angle_deg=None,
             line_features.append(Feature(geometry=line, properties=properties))
         contour_index += 1
     feature_collection = FeatureCollection(line_features)
-    if strdump or not geojson_filepath:
-        return geojson.dumps(feature_collection, sort_keys=True, separators=(',', ':'))
-    with open(geojson_filepath, 'w') as fileout:
-        geojson.dump(feature_collection, fileout, sort_keys=True, separators=(',', ':'))
+    return _render_feature_collection(feature_collection, geojson_filepath, strdump, serialize)
 
 
 def contourf_to_geojson_overlap(contourf, geojson_filepath=None, min_angle_deg=None,
-                                ndigits=5, unit='', stroke_width=1, fill_opacity=.9, geojson_properties=None, strdump=False):
+                                ndigits=5, unit='', stroke_width=1, fill_opacity=.9,
+                                geojson_properties=None, strdump=False, serialize=True):
     """Transform matplotlib.contourf to geojson with overlapping filled contours."""
     polygon_features = []
     contourf_idx = 0
@@ -63,14 +62,12 @@ def contourf_to_geojson_overlap(contourf, geojson_filepath=None, min_angle_deg=N
                 polygon_features.append(feature)
         contourf_idx += 1
     feature_collection = FeatureCollection(polygon_features)
-    if strdump or not geojson_filepath:
-        return geojson.dumps(feature_collection, sort_keys=True, separators=(',', ':'))
-    with open(geojson_filepath, 'w') as fileout:
-        geojson.dump(feature_collection, fileout, sort_keys=True, separators=(',', ':'))
+    return _render_feature_collection(feature_collection, geojson_filepath, strdump, serialize)
 
 
 def contourf_to_geojson(contourf, geojson_filepath=None, min_angle_deg=None,
-                        ndigits=5, unit='', stroke_width=1, fill_opacity=.9, geojson_properties=None, strdump=False):
+                        ndigits=5, unit='', stroke_width=1, fill_opacity=.9,
+                        geojson_properties=None, strdump=False, serialize=True):
     """Transform matplotlib.contourf to geojson with MultiPolygons."""
     polygon_features = []
     mps = []
@@ -103,6 +100,12 @@ def contourf_to_geojson(contourf, geojson_filepath=None, min_angle_deg=None,
         polygon_features.append(feature)
         contourf_idx += 1
     feature_collection = FeatureCollection(polygon_features)
+    return _render_feature_collection(feature_collection, geojson_filepath, strdump, serialize)
+
+
+def _render_feature_collection(feature_collection, geojson_filepath, strdump, serialize):
+    if not serialize:
+        return feature_collection
     if strdump or not geojson_filepath:
         return geojson.dumps(feature_collection, sort_keys=True, separators=(',', ':'))
     with open(geojson_filepath, 'w') as fileout:
