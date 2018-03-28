@@ -1,5 +1,6 @@
 from setuptools import setup
 
+
 try:
     import pypandoc
     long_description = pypandoc.convert('README.md', 'rst')
@@ -9,7 +10,7 @@ except(IOError, ImportError):
 
 setup(
     name='geojsoncontour',
-    version='0.2.0',
+    version='0.2.1',
     description='Convert matplotlib contour plots to geojson',
     long_description=long_description,
     keywords='contour plot geojson pyplot matplotlib gis map',
