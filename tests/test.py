@@ -94,6 +94,22 @@ class TestContourToGeoJson(unittest.TestCase):
         )
         self.assertTrue(isinstance(result, str))
 
+    def test_return_python_object_if_serialize_argument_false(self):
+        contours = self.create_contour()
+        ndigits = 3
+        result = geojsoncontour.contour_to_geojson(
+            serialize=False,
+            geojson_filepath=self.geojson_file,
+            strdump=True,
+            contour=contours,
+            min_angle_deg=self.config.min_angle_between_segments,
+            ndigits=ndigits,
+            unit=self.config.unit,
+            stroke_width=5
+        )
+        self.assertTrue(isinstance(result, dict))
+        self.assertEqual(result["type"], "FeatureCollection")
+
     def test_contour_to_geojson_extra_properties(self):
         contour = self.create_contour()
         ndigits = 3
