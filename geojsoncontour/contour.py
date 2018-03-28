@@ -36,10 +36,7 @@ def contour_to_geojson(contour, geojson_filepath=None, min_angle_deg=None,
             line_features.append(Feature(geometry=line, properties=properties))
         contour_index += 1
     feature_collection = FeatureCollection(line_features)
-    if strdump or not geojson_filepath:
-        return geojson.dumps(feature_collection, sort_keys=True, separators=(',', ':'))
-    with open(geojson_filepath, 'w') as fileout:
-        geojson.dump(feature_collection, fileout, sort_keys=True, separators=(',', ':'))
+    return _render_feature_collection(feature_collection, geojson_filepath, strdump)
 
 
 def contourf_to_geojson_overlap(contourf, geojson_filepath=None, min_angle_deg=None,
@@ -63,10 +60,7 @@ def contourf_to_geojson_overlap(contourf, geojson_filepath=None, min_angle_deg=N
                 polygon_features.append(feature)
         contourf_idx += 1
     feature_collection = FeatureCollection(polygon_features)
-    if strdump or not geojson_filepath:
-        return geojson.dumps(feature_collection, sort_keys=True, separators=(',', ':'))
-    with open(geojson_filepath, 'w') as fileout:
-        geojson.dump(feature_collection, fileout, sort_keys=True, separators=(',', ':'))
+    return _render_feature_collection(feature_collection, geojson_filepath, strdump)
 
 
 def contourf_to_geojson(contourf, geojson_filepath=None, min_angle_deg=None,
@@ -103,6 +97,10 @@ def contourf_to_geojson(contourf, geojson_filepath=None, min_angle_deg=None,
         polygon_features.append(feature)
         contourf_idx += 1
     feature_collection = FeatureCollection(polygon_features)
+    return _render_feature_collection(feature_collection, geojson_filepath, strdump)
+
+
+def _render_feature_collection(feature_collection, geojson_filepath, strdump):
     if strdump or not geojson_filepath:
         return geojson.dumps(feature_collection, sort_keys=True, separators=(',', ':'))
     with open(geojson_filepath, 'w') as fileout:
