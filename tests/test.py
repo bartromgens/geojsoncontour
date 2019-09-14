@@ -68,6 +68,20 @@ class TestContourToGeoJson(unittest.TestCase):
         self.assertTrue(filecmp.cmp(self.benchmark_geojson_file, self.geojson_file))
         os.remove(self.geojson_file)
 
+    def test_matplotlib_contour_to_geojson_none_min_angle(self):
+        contours = self.create_contour()
+        ndigits = 3
+        geojsoncontour.contour_to_geojson(
+            contour=contours,
+            geojson_filepath=self.geojson_file,
+            min_angle_deg=None,
+            ndigits=ndigits,
+            unit=self.config.unit,
+            stroke_width=5
+        )
+        self.assertTrue(os.path.exists(self.geojson_file))
+        os.remove(self.geojson_file)
+
     def test_return_string_if_destination_file_not_provided(self):
         contours = self.create_contour()
         ndigits = 3
