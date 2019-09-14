@@ -2,5 +2,3 @@ geojson==2.3.0
 matplotlib==2.2.0
 numpy==1.14.2
 xarray==0.10.2
-setuptools==39.0.1
-pypandoc==1.4
