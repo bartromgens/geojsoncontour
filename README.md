@@ -45,7 +45,7 @@ For filled contour plots (`matplotlib.contourf`) use `contourf_to_geojson`.
 See [example_contour.py](examples/example_contour.py) and [example_contourf.py](examples/example_contourf.py) for simple but complete examples.
 
 ### Show the geojson on a map
-An easy way to show the generated geojson on a map is the online geojson renderer [geojson.io](http://geojson.io).
+An easy way to show the generated geojson on a map is the online geojson renderer [geojson.io](http://geojson.io) or [geojson.tools](http://geojson.tools).
 
 ### Style properties
 Stroke color and width are set as geojson properties following https://github.com/mapbox/simplestyle-spec.
