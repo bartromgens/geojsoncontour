@@ -21,9 +21,8 @@ def contour_to_geojson(contour, geojson_filepath=None, min_angle_deg=None,
             v = path.vertices
             if len(v) < 3:
                 continue
-            coordinates = keep_high_angle(v, min_angle_deg)
-            if ndigits:
-                coordinates = np.around(coordinates, ndigits)
+            coordinates = keep_high_angle(v, min_angle_deg) if min_angle_deg else v
+            coordinates = np.around(coordinates, ndigits) if ndigits is not None else coordinates
             line = LineString(coordinates.tolist())
             properties = {
                 "stroke-width": stroke_width,
