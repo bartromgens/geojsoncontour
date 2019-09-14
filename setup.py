@@ -10,6 +10,7 @@ setup(
     version='0.3.1',
     description='Convert matplotlib contour plots to geojson',
     long_description=long_description,
+    long_description_content_type="text/markdown",
     keywords='contour plot geojson pyplot matplotlib gis map',
     url='http://github.com/bartromgens/geojsoncontour',
     author='Bart Römgens',
