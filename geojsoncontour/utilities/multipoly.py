@@ -8,27 +8,24 @@ import numpy as np
 class MP(object):
     """Class for easy MultiPolygon generation.
 
-    Just a helper class for easy identification of similar matplotlib.collections.
+    This class converts a matplotlib PathCollection into a GeoJSON MultiPolygon.
     """
 
-    def __init__(self, title, color):
-        """Distinction based on title and color."""
-        self.title = title
-        self.color = color
+    def __init__(self, path_collection, min_angle_deg, ndigits):
         self.coords = []
-
-    def add_coords(self, coords):
-        """Add new coordinate set for MultiPolygon."""
-        self.coords.append(coords)
-
-    def __eq__(self, other):
-        """Comparison of two MP instances."""
-        return (self.title == getattr(other, 'title', False) and
-                self.color == getattr(other, 'color', False))
+        for path in path_collection.get_paths():
+            polygon = []
+            for linestring in path.to_polygons():
+                if min_angle_deg:
+                    linestring = keep_high_angle(linestring, min_angle_deg)
+                if ndigits:
+                    linestring = np.around(linestring, ndigits)
+                polygon.append(linestring.tolist())
+            self.coords.append(polygon)
 
     def mpoly(self):
         """Output of GeoJSON MultiPolygon object."""
-        return MultiPolygon(coordinates=[self.coords])
+        return MultiPolygon(coordinates=self.coords)
 
 
 def unit_vector(vector):
@@ -59,7 +56,7 @@ def keep_high_angle(vertices, min_angle_deg):
     return np.array(accepted, dtype=vertices.dtype)
 
 
-def set_contourf_properties(stroke_width, fcolor, fill_opacity, contour_levels, contourf_idx, unit):
+def set_contourf_properties(stroke_width, fcolor, fill_opacity, level, unit):
     """Set property values for Polygon."""
     return {
         "stroke": fcolor,
@@ -67,5 +64,5 @@ def set_contourf_properties(stroke_width, fcolor, fill_opacity, contour_levels, 
         "stroke-opacity": 1,
         "fill": fcolor,
         "fill-opacity": fill_opacity,
-        "title": "%.2f" % contour_levels[contourf_idx] + ' ' + unit
+        "title": "%.2f" % level + ' ' + unit
     }
