@@ -12,7 +12,7 @@ Demo project that uses geojsoncontour: [climatemaps.romgens.com](http://climatem
 ## Installation
 Install with pip,
 ```
-$ pip install geojsoncontour
+pip install geojsoncontour
 ```
 
 ## Usage
