@@ -5,7 +5,7 @@ import numpy as np
 from matplotlib.colors import rgb2hex
 from geojson import Feature, LineString
 from geojson import Polygon, FeatureCollection
-from .utilities.multipoly import MP, keep_high_angle, set_contourf_properties
+from .utilities.multipoly import MP, keep_high_angle, set_contourf_properties,get_contourf_levels
 
 
 def contour_to_geojson(contour, geojson_filepath=None, min_angle_deg=None,
@@ -45,6 +45,7 @@ def contourf_to_geojson_overlap(contourf, geojson_filepath=None, min_angle_deg=N
     """Transform matplotlib.contourf to geojson with overlapping filled contours."""
     polygon_features = []
     contourf_idx = 0
+    contourf_levels =  get_contourf_levels(contourf.levels,contourf.extend)
     for collection in contourf.collections:
         color = collection.get_facecolor()
         for path in collection.get_paths():
@@ -54,7 +55,7 @@ def contourf_to_geojson_overlap(contourf, geojson_filepath=None, min_angle_deg=N
                 coord = np.around(coord, ndigits) if ndigits else coord
                 polygon = Polygon(coordinates=[coord.tolist()])
                 fcolor = rgb2hex(color[0])
-                properties = set_contourf_properties(stroke_width, fcolor, fill_opacity, contourf.levels[contourf_idx], unit)
+                properties = set_contourf_properties(stroke_width, fcolor, fill_opacity, contourf_levels[contourf_idx], unit)
                 if geojson_properties:
                     properties.update(geojson_properties)
                 feature = Feature(geometry=polygon, properties=properties)
