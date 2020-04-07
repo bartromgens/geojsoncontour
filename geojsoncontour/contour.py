@@ -70,7 +70,8 @@ def contourf_to_geojson(contourf, geojson_filepath=None, min_angle_deg=None,
                         geojson_properties=None, strdump=False, serialize=True):
     """Transform matplotlib.contourf to geojson with MultiPolygons."""
     polygon_features = []
-    for coll, level in zip(contourf.collections, contourf.levels):
+    contourf_levels = get_contourf_levels(contourf.levels,contourf.extend)
+    for coll, level in zip(contourf.collections, contourf_levels):
         color = coll.get_facecolor()
         muli = MP(coll, min_angle_deg, ndigits)
         polygon = muli.mpoly()
