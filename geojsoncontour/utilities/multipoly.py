@@ -64,21 +64,17 @@ def set_contourf_properties(stroke_width, fcolor, fill_opacity, level, unit):
         "stroke-opacity": 1,
         "fill": fcolor,
         "fill-opacity": fill_opacity,
-        "title": "%s" % level + ' ' + unit
+        "title": "{} {}".format(level, unit)
     }
 
 
-def get_contourf_levels(levels,extend):
-
-    mid_levels=[ "%.2f" % levels[i] + '-' + "%.2f" % levels[i+1] for i in range(len(levels)-1) ]
-
-    if extend=='both':
-        return ["<%.2f" % levels[0],*mid_levels ,">%.2f" % levels[-1]]
-    elif extend=='max':
-        return [*mid_levels ,">%.2f" % levels[-1]]
-    elif extend=='min':
-        return ["<%.2f" % levels[0],*mid_levels]
+def get_contourf_levels(levels, extend):
+    mid_levels = ["%.2f" % levels[i] + '-' + "%.2f" % levels[i+1] for i in range(len(levels)-1)]
+    if extend == 'both':
+        return ["<%.2f" % levels[0], *mid_levels, ">%.2f" % levels[-1]]
+    elif extend == 'max':
+        return [*mid_levels, ">%.2f" % levels[-1]]
+    elif extend == 'min':
+        return ["<%.2f" % levels[0], *mid_levels]
     else:
         return mid_levels
-            
-

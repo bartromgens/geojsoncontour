@@ -45,7 +45,7 @@ def contourf_to_geojson_overlap(contourf, geojson_filepath=None, min_angle_deg=N
     """Transform matplotlib.contourf to geojson with overlapping filled contours."""
     polygon_features = []
     contourf_idx = 0
-    contourf_levels =  get_contourf_levels(contourf.levels,contourf.extend)
+    contourf_levels = get_contourf_levels(contourf.levels, contourf.extend)
     for collection in contourf.collections:
         color = collection.get_facecolor()
         for path in collection.get_paths():
@@ -77,7 +77,7 @@ def contourf_to_geojson(contourf, geojson_filepath=None, min_angle_deg=None,
     else:
         variable_opacity = False
     polygon_features = []
-    contourf_levels = get_contourf_levels(contourf.levels,contourf.extend)
+    contourf_levels = get_contourf_levels(contourf.levels, contourf.extend)
     for coll, level in zip(contourf.collections, contourf_levels):
         color = coll.get_facecolor()
         muli = MP(coll, min_angle_deg, ndigits)
