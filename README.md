@@ -54,9 +54,30 @@ Stroke color and width are set as geojson properties following https://github.co
 Try [geojson-vt](https://github.com/mapbox/geojson-vt) or [tippecanoe](https://github.com/mapbox/tippecanoe) if performance is an issue and you need to tile your geojson contours.
 
 
-## Tests
+## Development
+
+### Tests
 
 Run all tests,
 ```
 python -m unittest discover
+```
+
+### Release
+
+Install setuptools, wheel and twine:
+```
+python -m pip install --upgrade setuptools wheel twine
+```
+
+Increase the version number in `setup.py`.
+
+Create dist:
+```
+python setup.py sdist bdist_wheel
+```
+
+Upload:
+```
+twine upload dist/*
 ```
