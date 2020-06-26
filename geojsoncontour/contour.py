@@ -65,9 +65,16 @@ def contourf_to_geojson_overlap(contourf, geojson_filepath=None, min_angle_deg=N
 
 
 def contourf_to_geojson(contourf, geojson_filepath=None, min_angle_deg=None,
-                        ndigits=5, unit='', stroke_width=1, fill_opacity=.9,
+                        ndigits=5, unit='', stroke_width=1, fill_opacity=.9, fill_opacity_range=None,
                         geojson_properties=None, strdump=False, serialize=True):
     """Transform matplotlib.contourf to geojson with MultiPolygons."""
+    if fill_opacity_range:
+        variable_opacity = True
+        min_opacity, max_opacity = fill_opacity_range
+        opacity_increment = (max_opacity - min_opacity) / len(contourf.levels)
+        fill_opacity = min_opacity
+    else:
+        variable_opacity = False
     polygon_features = []
     for coll, level in zip(contourf.collections, contourf.levels):
         color = coll.get_facecolor()
@@ -79,6 +86,8 @@ def contourf_to_geojson(contourf, geojson_filepath=None, min_angle_deg=None,
             properties.update(geojson_properties)
         feature = Feature(geometry=polygon, properties=properties)
         polygon_features.append(feature)
+        if variable_opacity:
+            fill_opacity += opacity_increment
     feature_collection = FeatureCollection(polygon_features)
     return _render_feature_collection(feature_collection, geojson_filepath, strdump, serialize)
 
