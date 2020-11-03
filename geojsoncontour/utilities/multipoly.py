@@ -21,7 +21,8 @@ class MP(object):
                 if ndigits:
                     linestring = np.around(linestring, ndigits)
                 polygon.append(linestring.tolist())
-            self.coords.append(polygon)
+            if polygon:
+                self.coords.append(polygon)
 
     def mpoly(self):
         """Output of GeoJSON MultiPolygon object."""
