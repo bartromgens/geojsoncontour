@@ -5,36 +5,44 @@ import numpy as np
 from matplotlib.colors import rgb2hex
 from geojson import Feature, LineString
 from geojson import Polygon, FeatureCollection
+
 from .utilities.multipoly import MP, keep_high_angle, set_contourf_properties,get_contourf_levels
+from .utilities.vertices import get_vertices_from_path
 
 
 def contour_to_geojson(contour, geojson_filepath=None, min_angle_deg=None,
                        ndigits=5, unit='', stroke_width=1, geojson_properties=None, strdump=False,
                        serialize=True):
     """Transform matplotlib.contour to geojson."""
-    collections = contour.collections
-    contour_index = 0
+    # collections = contour.collections
     line_features = []
-    for collection in collections:
-        color = collection.get_edgecolor()
-        for path in collection.get_paths():
-            v = path.vertices
-            if len(v) < 3:
+    paths = contour.get_paths()
+    colors = contour.get_edgecolors()
+    levels = contour.levels
+    for contour_index, (path, color, level) in enumerate(zip(paths, colors, levels)):
+        for coordinates in get_vertices_from_path(path):
+            if len(coordinates) < 3:
                 continue
-            coordinates = keep_high_angle(v, min_angle_deg) if min_angle_deg else v
-            coordinates = np.around(coordinates, ndigits) if ndigits is not None else coordinates
+            if np.all(np.equal(coordinates, coordinates[0])):
+                # Matplotlib sometimes emits empty paths which
+                # can be ignored
+                continue
+            if min_angle_deg:
+                coordinates = keep_high_angle(coordinates, min_angle_deg)
+            if ndigits:
+                coordinates = np.around(coordinates, ndigits)
             line = LineString(coordinates.tolist())
             properties = {
                 "stroke-width": stroke_width,
-                "stroke": rgb2hex(color[0]),
-                "title": "%.2f" % contour.levels[contour_index] + ' ' + unit,
-                "level-value": float("%.6f" % contour.levels[contour_index]),
+                "stroke": rgb2hex(color),
+                "title": f"{level:.2f} {unit}",
+                "level-value": float(f"{level:.6f}"),
                 "level-index": contour_index
             }
             if geojson_properties:
                 properties.update(geojson_properties)
             line_features.append(Feature(geometry=line, properties=properties))
-        contour_index += 1
+
     feature_collection = FeatureCollection(line_features)
     return _render_feature_collection(feature_collection, geojson_filepath, strdump, serialize)
 
