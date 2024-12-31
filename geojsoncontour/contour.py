@@ -14,7 +14,6 @@ def contour_to_geojson(contour, geojson_filepath=None, min_angle_deg=None,
                        ndigits=5, unit='', stroke_width=1, geojson_properties=None, strdump=False,
                        serialize=True):
     """Transform matplotlib.contour to geojson."""
-    # collections = contour.collections
     line_features = []
     paths = contour.get_paths()
     colors = contour.get_edgecolors()
