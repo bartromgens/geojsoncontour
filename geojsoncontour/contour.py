@@ -51,23 +51,21 @@ def contourf_to_geojson_overlap(contourf, geojson_filepath=None, min_angle_deg=N
                                 geojson_properties=None, strdump=False, serialize=True):
     """Transform matplotlib.contourf to geojson with overlapping filled contours."""
     polygon_features = []
-    contourf_idx = 0
     contourf_levels = get_contourf_levels(contourf.levels, contourf.extend)
-    for collection in contourf.collections:
-        color = collection.get_facecolor()
-        for path in collection.get_paths():
-            for coord in path.to_polygons():
-                if min_angle_deg:
-                    coord = keep_high_angle(coord, min_angle_deg)
-                coord = np.around(coord, ndigits) if ndigits else coord
-                polygon = Polygon(coordinates=[coord.tolist()])
-                fcolor = rgb2hex(color[0])
-                properties = set_contourf_properties(stroke_width, fcolor, fill_opacity, contourf_levels[contourf_idx], unit)
-                if geojson_properties:
-                    properties.update(geojson_properties)
-                feature = Feature(geometry=polygon, properties=properties)
-                polygon_features.append(feature)
-        contourf_idx += 1
+    contourf_colors = contourf.get_facecolor()
+    for path, level, color in zip(contourf.get_paths(), contourf_levels, contourf_colors):
+        for coord in get_vertices_from_path(path):
+            if min_angle_deg:
+                coord = keep_high_angle(coord, min_angle_deg)
+            if ndigits:
+                coord = np.around(coord, ndigits)
+            polygon = Polygon(coordinates=[coord.tolist()])
+            fcolor = rgb2hex(color)
+            properties = set_contourf_properties(stroke_width, fcolor, fill_opacity, level, unit)
+            if geojson_properties:
+                properties.update(geojson_properties)
+            feature = Feature(geometry=polygon, properties=properties)
+            polygon_features.append(feature)
     feature_collection = FeatureCollection(polygon_features)
     return _render_feature_collection(feature_collection, geojson_filepath, strdump, serialize)
 
