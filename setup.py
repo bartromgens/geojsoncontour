@@ -20,7 +20,7 @@ setup(
     install_requires=[
         'geojson',
         'numpy',
-        'matplotlib',
+        'matplotlib>=3.8',
         'xarray'
     ],
     zip_safe=False,

@@ -1,32 +1,61 @@
 #!/usr/bin/python3.4
 # -*- encoding: utf-8 -*-
 """Helper module for transformation of matplotlib.contour(f) to GeoJSON."""
+import enum
+
 from geojson import MultiPolygon
 import numpy as np
 
+from .vertices import get_vertices_from_path
 
-class MP(object):
-    """Class for easy MultiPolygon generation.
 
-    This class converts a matplotlib PathCollection into a GeoJSON MultiPolygon.
+class Orientation(enum.IntEnum):
+    CW = enum.auto()
+    CCW = enum.auto()
+    
+
+def orientation(vertices) -> Orientation:
+    """Determine orientation for a closed polygon
+
+    See https://en.wikipedia.org/wiki/Curve_orientation for an
+    explanation of this formula
     """
+    # Ignoring last index (which is duplicate of first)
+    vertices = vertices[:-1, :]
+    lowest_x_indices = np.flatnonzero(vertices[:, 0] == np.min(vertices[:, 0]))
+    lowest_y_indices = np.flatnonzero(vertices[lowest_x_indices, 1] == np.min(vertices[lowest_x_indices, 1]))
+    index = lowest_x_indices[lowest_y_indices[0]]
+    
+    prev_index = index - 1
+    next_index = (index + 1) % vertices.shape[0]
+    xa, ya = vertices[prev_index, :]
+    xb, yb = vertices[index, :]
+    xc, yc = vertices[next_index, :]
 
-    def __init__(self, path_collection, min_angle_deg, ndigits):
-        self.coords = []
-        for path in path_collection.get_paths():
-            polygon = []
-            for linestring in path.to_polygons():
-                if min_angle_deg:
-                    linestring = keep_high_angle(linestring, min_angle_deg)
-                if ndigits:
-                    linestring = np.around(linestring, ndigits)
-                polygon.append(linestring.tolist())
-            if polygon:
-                self.coords.append(polygon)
+    detO = (xb - xa)*(yc - ya) - (xc - xa)*(yb - ya)
+    if detO > 0:
+        return Orientation.CCW
+    else:
+        return Orientation.CW
 
-    def mpoly(self):
-        """Output of GeoJSON MultiPolygon object."""
-        return MultiPolygon(coordinates=self.coords)
+
+def multi_polygon(path, min_angle_deg, ndigits):
+    polygons = []
+    for linestring in path.to_polygons():
+        if min_angle_deg:
+            linestring = keep_high_angle(linestring, min_angle_deg)
+        if ndigits:
+            linestring = np.around(linestring, ndigits)
+
+        handedness = orientation(linestring)
+        if handedness == Orientation.CCW:
+            polygons.append([linestring.tolist()])
+        else:
+            # This is a hole, which we assume belong
+            # to the previous polygon
+            polygons[-1].extend([linestring.tolist()])
+
+    return MultiPolygon(coordinates=polygons)
 
 
 def unit_vector(vector):
