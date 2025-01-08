@@ -1,4 +1,0 @@
-geojson==2.5.0
-matplotlib==2.2.5
-numpy==1.18.5
-xarray==0.10.2
