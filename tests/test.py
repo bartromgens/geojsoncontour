@@ -185,6 +185,15 @@ class TestContourToGeoJson(unittest.TestCase):
         Z = numpy.sqrt(X*X + Y*Y)
         return latrange, lonrange, Z
 
+    def test_orientation_order_gh31(self):
+        # Flipping x should still result in CCW orientation
+        # of final polygon
+        x = numpy.linspace(0, 10, 14)[::-1]
+        y = numpy.linspace(10, 20, 15)
+        x, y = numpy.meshgrid(x, y)
+        z = numpy.sin(x) * numpy.cos(y)
+        contourf = plt.contourf(x, y, z)
+        mp = geojsoncontour.contourf_to_geojson(contourf, ndigits=3)
 
 class ContourPlotConfig(object):
     def __init__(self, level_lower=0.0, level_upper=100.0, colormap=plt.cm.jet, unit=''):  # jet, jet_r, YlOrRd, gist_rainbow
