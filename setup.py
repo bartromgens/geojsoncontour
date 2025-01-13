@@ -7,7 +7,7 @@ with open("README.md", "r") as fh:
 
 setup(
     name='geojsoncontour',
-    version='0.5.0',
+    version='0.5.1',
     description='Convert matplotlib contour plots to geojson',
     long_description=long_description,
     long_description_content_type="text/markdown",
