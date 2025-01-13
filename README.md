@@ -1,5 +1,5 @@
 # geojsoncontour
-[![Build Status](https://travis-ci.org/bartromgens/geojsoncontour.svg?branch=master)](https://travis-ci.org/bartromgens/geojsoncontour) [![PyPI version](https://badge.fury.io/py/geojsoncontour.svg)](https://badge.fury.io/py/geojsoncontour) [![Coverage Status](https://coveralls.io/repos/github/bartromgens/geojsoncontour/badge.svg?branch=master)](https://coveralls.io/github/bartromgens/geojsoncontour?branch=master)  
+[![Build Status](https://github.com/bartromgens/geojsoncontour/workflows/ci/badge.svg)](https://github.com/bartromgens/geojsoncontour/actions?query=branch%3Amaster) [![PyPI version](https://badge.fury.io/py/geojsoncontour.svg)](https://badge.fury.io/py/geojsoncontour) [![Coverage Status](https://coveralls.io/repos/github/bartromgens/geojsoncontour/badge.svg?branch=master)](https://coveralls.io/github/bartromgens/geojsoncontour?branch=master)  
 A Python 3 module to convert matplotlib contour plots to geojson. Supports both contour and contourf plots.
 
 Designed to show geographical [contour plots](http://matplotlib.org/examples/pylab_examples/contour_demo.html), 
