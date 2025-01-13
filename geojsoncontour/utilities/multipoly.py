@@ -40,6 +40,12 @@ def orientation(vertices) -> Orientation:
 
 
 def multi_polygon(path, min_angle_deg, ndigits):
+    # It seems matplotlib emits polygons in either CW or CCW order.
+    # We detect which order the first polygon has, and uses this
+    # as the ring, with polygons of the other winding order as
+    # holes. If order is reversed compared to the conventions,
+    # we reverse the order of the polygon so rings have CCW order.
+    orientation_for_keep = None
     polygons = []
     for linestring in path.to_polygons():
         if min_angle_deg:
@@ -48,7 +54,12 @@ def multi_polygon(path, min_angle_deg, ndigits):
             linestring = np.around(linestring, ndigits)
 
         handedness = orientation(linestring)
-        if handedness == Orientation.CCW:
+        if len(polygons) == 0:
+            orientation_for_keep = handedness
+        if orientation_for_keep != Orientation.CCW:
+            linestring = linestring[::-1, :]
+
+        if handedness == orientation_for_keep:
             polygons.append([linestring.tolist()])
         else:
             # This is a hole, which we assume belong
