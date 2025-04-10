@@ -25,6 +25,10 @@ jobs:
           python-version: ${{ matrix.python-version }}
           cache: "pip"
 
+      - name: Upgrade setuptools and pip
+        if: matrix.os == 'ubuntu-22.04'
+        run: pip install --upgrade setuptools pip
+
       - name: Install dependencies
         run: pip install .
 
